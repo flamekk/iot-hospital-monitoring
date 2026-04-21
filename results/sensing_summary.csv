@@ -1,0 +1,4 @@
+device_id,equipment_type,sampling_interval_sec,collection_duration_sec,num_samples,normal_samples,anomaly_samples,avg_collection_time_ms,avg_cpu_percent,avg_ram_mb,estimated_power_w,sensor_read_cost_j,estimated_energy_wh,estimated_energy_mah
+DEV001,ventilator,1,60.05,60,56,4,0.143,0.597,13.533,3.5,0.02,0.058713,11.742512
+DEV001,ventilator,2,60.02,30,25,5,0.148,0.033,13.157,3.5,0.02,0.058523,11.704579
+DEV001,ventilator,5,60.01,12,12,0,0.147,9.075,13.15,3.5,0.02,0.058409,11.681844

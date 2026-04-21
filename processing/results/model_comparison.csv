@@ -1,0 +1,4 @@
+model,accuracy,precision,recall,f1_score,avg_inference_time_ms,avg_ram_mb,estimated_energy_mah,confusion_matrix
+Threshold,1.0,1.0,1.0,1.0,0.148358,146.543,0.555556,"[[799, 0], [0, 201]]"
+LogisticRegression,1.0,1.0,1.0,1.0,3.3227,148.005,0.666667,"[[799, 0], [0, 201]]"
+DecisionTree,1.0,1.0,1.0,1.0,3.169803,148.4433,0.666667,"[[799, 0], [0, 201]]"
