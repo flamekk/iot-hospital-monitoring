@@ -626,29 +626,32 @@ with tab8:
 with tab9:
     st.subheader("Prédiction d’anomalie")
 
+    mode = st.radio("Mode de prédiction", ["Temps réel", "Batch (10 mesures)"])
+
     st.write("### Modèle sélectionné")
     st.write(selected_model)
 
-    pred = predict_with_model(selected_model, data)
+    if mode == "Temps réel":
+        pred = predict_with_model(selected_model, data)
 
-    pred_features_df = pd.DataFrame([{
-        "vibration_rms": data["vibration_rms"],
-        "vibration_peak": data["vibration_peak"],
-        "power_w": data["power_w"],
-        "current_a": data["current_a"],
-        "temperature_c": data["temperature_c"]
-    }])
+        pred_features_df = pd.DataFrame([{
+            "vibration_rms": data["vibration_rms"],
+            "vibration_peak": data["vibration_peak"],
+            "power_w": data["power_w"],
+            "current_a": data["current_a"],
+            "temperature_c": data["temperature_c"]
+        }])
 
-    st.write("### Données d’entrée")
-    st.dataframe(pred_features_df, use_container_width=True)
+        st.write("### Données d’entrée")
+        st.dataframe(pred_features_df, use_container_width=True)
 
-    if pred is None:
-        st.warning("Le modèle n’a pas pu être chargé.")
-    else:
-        if pred == 1:
-            st.error("🔴 Prédiction : ANOMALIE")
+        if pred is None:
+            st.warning("Le modèle n’a pas pu être chargé.")
         else:
-            st.success("🟢 Prédiction : NORMAL")
+            if pred == 1:
+                st.error("🔴 Prédiction : ANOMALIE")
+            else:
+                st.success("🟢 Prédiction : NORMAL")
 
         st.write("### Interprétation")
         if selected_model == "Threshold":
@@ -658,7 +661,42 @@ with tab9:
         elif selected_model == "Decision Tree":
             st.info("L’arbre de décision applique une suite de règles apprises à partir des données.")
 
+    else:
+        batch_data = []
 
+        for i in range(10):
+            d = generate_sensor_data(
+                device_id=f"DEV_BATCH_{i+1}",
+                equipment_type="ventilator",
+                anomaly_prob=0.3
+            )
+
+            pred = predict_with_model(selected_model, d)
+
+            batch_data.append({
+                "device_id": d["device_id"],
+                "vibration_rms": d["vibration_rms"],
+                "vibration_peak": d["vibration_peak"],
+                "power_w": d["power_w"],
+                "current_a": d["current_a"],
+                "temperature_c": d["temperature_c"],
+                "prediction": "ANOMALIE" if pred == 1 else "NORMAL"
+            })
+
+        df_batch = pd.DataFrame(batch_data)
+
+        st.write("### Prédictions multiples")
+        st.dataframe(df_batch, use_container_width=True)
+
+        st.write("### Répartition des prédictions")
+        pred_counts = df_batch["prediction"].value_counts()
+        st.bar_chart(pred_counts)
+
+        st.write("### Interprétation")
+        st.info(
+            "Le mode Batch permet d’évaluer le comportement du modèle sur plusieurs mesures simulées "
+            "afin d’observer la répartition entre états normaux et anomalies."
+        )
 with tab10:
     st.subheader("Rapport automatique PDF")
 
