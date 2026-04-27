@@ -168,18 +168,59 @@ iot_hospital_monitoring/
 
 ## 🚀 How to Run
 
-
+```bash
+# Clone the repository
 git clone https://github.com/flamekk/iot-hospital-monitoring.git
 cd iot-hospital-monitoring
 
+# Create and activate virtual environment
 python3 -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
 source venv/bin/activate
 
+# Install dependencies
 pip install -r requirements.txt
 
+# Run the dashboard
 cd dashboard
 streamlit run app.py
-👩‍💻 Authors
+```
+
+### Optional: Run Network Strategies Comparison
+
+```bash
+# Start the Flask server (in one terminal)
+python network/server.py
+
+# Run each strategy (in another terminal)
+python network/transmit_data.py S1
+python network/transmit_data.py S2
+python network/transmit_data.py S3
+```
+
+### Optional: Train and Evaluate AI Models
+
+```bash
+# Generate dataset and train models
+python processing/generate_dataset.py
+python processing/train_and_evaluate.py
+```
+
+---
+
+## 📦 Requirements
+
+- Python 3.8+
+- Raspberry Pi (optional, for real deployment)
+- See `requirements.txt` for all Python dependencies
+
+---
+
+## 👩‍💻 Authors
 Hiba Zbari
 Aya Fadel
 Najoua Mouaddab
