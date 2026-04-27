@@ -5,6 +5,7 @@ import json
 import requests
 import psutil
 from statistics import mean
+import random
 
 import sys
 sys.path.append(os.path.join("..", "sensing"))
@@ -62,8 +63,24 @@ def send_payload(payload):
     return response.status_code, latency_ms, payload_size_bytes
 
 
-def run_strategy(strategy_name):
+def generate_all_data():
+    random.seed(42)
+    data_list = []
+    for _ in range(COLLECTION_DURATION_SEC // SAMPLING_INTERVAL_SEC):
+        data = generate_sensor_data(
+            device_id=DEVICE_ID,
+            equipment_type=EQUIPMENT_TYPE,
+            anomaly_prob=ANOMALY_PROB
+        )
+        data_list.append(data)
+    return data_list
+
+
+def run_strategy(strategy_name, pre_generated_data=None):
     ensure_output_dir()
+
+    if pre_generated_data is None:
+        pre_generated_data = generate_all_data()
 
     process = psutil.Process(os.getpid())
 
@@ -80,21 +97,16 @@ def run_strategy(strategy_name):
     batch = []
 
     start_global = time.time()
-    end_global = start_global + COLLECTION_DURATION_SEC
 
     print(f"Début stratégie : {strategy_name}")
 
-    while time.time() < end_global:
-        data = generate_sensor_data(
-            device_id=DEVICE_ID,
-            equipment_type=EQUIPMENT_TYPE,
-            anomaly_prob=ANOMALY_PROB
-        )
-
+    for data in pre_generated_data:
         total_generated += 1
 
         if data["state"] == "anomaly":
             anomaly_count += 1
+
+        time.sleep(SAMPLING_INTERVAL_SEC)
 
         should_send = False
         payload = None
@@ -115,7 +127,7 @@ def run_strategy(strategy_name):
                 payload = data
                 should_send = True
 
-        if should_send:
+        if should_send and payload:
             status_code, latency_ms, payload_size_bytes = send_payload(payload)
 
             if status_code == 200:
@@ -130,8 +142,6 @@ def run_strategy(strategy_name):
 
             cpu_usages.append(psutil.cpu_percent(interval=None))
             ram_usages.append(process.memory_info().rss / (1024 * 1024))
-
-        time.sleep(SAMPLING_INTERVAL_SEC)
 
     # envoyer le reste du batch pour S2
     if strategy_name == "S2" and batch:
@@ -200,4 +210,9 @@ if __name__ == "__main__":
         print("Strategy must be one of: S1, S2, S3")
         sys.exit(1)
 
-    run_strategy(strategy)
+    pre_generated_data = generate_all_data()
+    print(f"Données pré-générées: {len(pre_generated_data)} records")
+    anomaly_in_data = sum(1 for d in pre_generated_data if d["state"] == "anomaly")
+    print(f"Anomalies dans les données: {anomaly_in_data}")
+
+    run_strategy(strategy, pre_generated_data)
