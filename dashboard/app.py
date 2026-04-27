@@ -59,6 +59,15 @@ NETWORK_SUMMARY = os.path.join("..", "network", "results", "network_summary.csv"
 MODEL_SUMMARY = os.path.join("..", "processing", "results", "model_comparison.csv")
 MODELS_DIR = os.path.join("..", "processing", "models")
 
+if not os.path.exists(NETWORK_SUMMARY):
+    NETWORK_SUMMARY = os.path.join("network", "results", "network_summary.csv")
+if not os.path.exists(MODEL_SUMMARY):
+    MODEL_SUMMARY = os.path.join("processing", "results", "model_comparison.csv")
+if not os.path.exists(SENSING_SUMMARY):
+    SENSING_SUMMARY = os.path.join("results", "sensing_summary.csv")
+if not os.path.exists(MODELS_DIR):
+    MODELS_DIR = os.path.join("processing", "models")
+
 # -----------------------------
 # Helpers
 # -----------------------------
