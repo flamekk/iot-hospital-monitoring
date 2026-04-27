@@ -1,4 +1,4 @@
 strategy,sampling_interval_sec,collection_duration_sec,total_generated_records,anomaly_count,total_sent_messages,total_sent_records,avg_latency_ms,avg_payload_size_bytes,total_bytes_sent,bandwidth_bytes_sec,avg_cpu_percent,avg_ram_mb,estimated_energy_wh,estimated_energy_mah
-S1,1,60.74,60,10,60,60,11.094,227.95,13677,225.158,0.575,28.561,0.059927,11.985437
-S2,1,60.18,60,6,12,60,12.989,1148.083,13777,228.913,0.092,28.57,0.058717,11.743354
-S3,1,60.17,60,12,12,12,11.583,229.417,2753,45.756,0.192,28.551,0.05867,11.734044
+S1,1,60.62,60,7,60,60,9.081,227.9,13674,225.56,5.373,33.206,0.059809,11.961797
+S2,1,60.22,60,7,12,60,13.917,1149.5,13794,229.078,4.983,32.954,0.058747,11.74935
+S3,1,60.14,60,7,7,7,14.341,229.429,1606,26.703,4.143,33.203,0.058574,11.714703
